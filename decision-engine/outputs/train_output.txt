@@ -1,0 +1,16 @@
+(.venv) sourabh@fedora:~/Repos/Delivery-Risk-Management-System/decision-engine$ python3 src/train.py
+rows 1975 | train 1289 | test 608
+AUC 0.747 | PR-AUC 0.514
+Brier 0.1670 (always guessing 29%: 0.1968; lower is better)
+average predicted risk 28.6% vs actual 26.8%
+
+risk band    orders  predicted  actual
+(0.0, 0.15]     126     10.1%    8.7%
+(0.15, 0.25]    215     19.7%   16.3%
+(0.25, 0.35]     96     29.6%   28.1%
+(0.35, 0.5]      74     41.2%   45.9%
+(0.5, 0.7]       75     56.6%   56.0%
+(0.7, 1.0]       22     79.2%   63.6%
+
+saved outputs/model.pkl and outputs/orders_scored.csv
+(.venv) sourabh@fedora:~/Repos/Delivery-Risk-Management-System/decision-engine$

@@ -1,0 +1,37 @@
+# ---------------------------------------------------------------------------
+# Decision engine settings. Edit the numbers, save, restart. No code changes.
+# Anything marked ASSUMPTION is a guess until measured with real orders.
+# ---------------------------------------------------------------------------
+
+economics:
+  gross_margin_pct: 0.62        # margin on a delivered order, as a share of order value
+  forward_shipping: 65          # Rs, cost of sending the parcel
+  return_shipping: 65           # Rs, cost of bringing it back
+  handling: 25                  # Rs, packaging and handling per return
+  damage_rate: 0.08             # share of returned products that cannot be resold
+  product_cost: 180             # Rs, average cost of a product that gets damaged
+  prepaid_rto_rate: 0.04        # return rate on prepaid orders
+  repeat_value_first_time: 151  # Rs, future margin from a first-time buyer (estimated from the sample, COD only)
+
+confirmation:
+  genuine_confirm_rate: 0.88    # ASSUMPTION: share of genuine customers who reply YES
+  returner_confirm_rate: 0.35   # ASSUMPTION: share of would-be returners who still reply YES
+  message_cost: 1.5             # Rs, cost of one WhatsApp conversation (confirm or nudge)
+
+nudge:
+  accept_base_genuine: -1.15    # ASSUMPTION: willingness of a genuine customer to prepay (higher = more willing)
+  accept_base_returner: -2.5    # ASSUMPTION: same for a would-be returner (lower: they are less willing)
+  discount_elasticity: 4.0      # ASSUMPTION: how much a bigger discount (as share of order value) raises acceptance
+  discount_grid: [30, 50, 75, 100]   # Rs, discounts the engine may offer; it picks the best one per order
+  # With the defaults, Rs 50 off a Rs 649 order gives about 30% acceptance from genuine customers and 10% from would-be returners.
+
+address_quality:                # score from 0 (unreadable) to 1 (clear), made by the address/name/phone check
+  hold_manual_below: 0.20       # below this the order is held for a person to look at
+  force_confirm_below: 0.50     # below this the customer must confirm on WhatsApp, whatever the risk
+  default_when_missing: 0.60    # score used if the address check fails or is missing (neutral)
+
+bands:                          # guardrails. Each action is only allowed up to its ceiling (risk of return).
+  never_cancel_first_time: true # Marketing guardrail: first-time buyers are never auto-cancelled
+  ship_max_p:    {first_time: 0.30, repeat: 0.40}   # never ship as-is above this risk
+  nudge_max_p:   {first_time: 0.80, repeat: 0.80}   # never offer a prepaid discount above this risk
+  confirm_max_p: {first_time: 1.00, repeat: 0.90}   # above this, repeat orders can only be cancelled
